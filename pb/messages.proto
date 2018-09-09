@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package pb;
+
+service VpnkitManager {
+    rpc Ping (Void) returns (TextParcel);
+}
+
+message TextParcel {
+    string value = 1;
+}
+
+message Void {}
