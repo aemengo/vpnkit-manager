@@ -4,10 +4,18 @@ package pb;
 
 service VpnkitManager {
     rpc Ping (Void) returns (TextParcel);
+    rpc ExposeAddress (stream ExposeAddressOpts) returns (Void);
 }
 
 message TextParcel {
     string value = 1;
+}
+
+message ExposeAddressOpts {
+    string hostIP = 1;
+    string hostPort = 2;
+    string containerIP = 3;
+    string containerPort = 4;
 }
 
 message Void {}

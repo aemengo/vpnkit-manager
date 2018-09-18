@@ -6,8 +6,10 @@ import (
 	"context"
 	"fmt"
 	"github.com/aemengo/vpnkit-manager/pb"
+	"io"
 	"log"
 	"os/exec"
+	"strings"
 )
 
 type Service struct {
@@ -34,6 +36,52 @@ func New(logger *log.Logger) (*Service, error) {
 
 func (s *Service) Ping(ctx context.Context, req *pb.Void) (*pb.TextParcel, error) {
 	return &pb.TextParcel{Value: "pong"}, nil
+}
+
+func (s *Service) ExposeAddress(stream pb.VpnkitManager_ExposeAddressServer) error {
+	for {
+		addr, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			return err
+		}
+
+		err = s.exposeAddress(addr.HostIP, addr.HostPort, addr.ContainerIP, addr.ContainerPort)
+		if err != nil {
+			return err
+		}
+	}
+
+	return stream.SendAndClose(&pb.Void{})
+}
+
+
+func (s *Service) ExposeAddressFlags(addresses []string) {
+	for _, address := range addresses {
+		s.logger.Printf("Attempting to expose port for %q...\n", address)
+
+		elements := strings.Split(address, ":")
+		if len(elements) != 4 {
+			s.logger.Printf("%q is an invalid address...\n", address)
+			continue
+		}
+
+		err := s.exposeAddress(elements[0], elements[1], elements[2], elements[3])
+		if err != nil {
+			s.logger.Printf("Failed to expose address %q: %s\n", address, err)
+		}
+	}
+}
+
+func (s *Service) exposeAddress(hostIP, hostPort, containerIP, containerPort string) error {
+	return exec.Command("/usr/bin/vpnkit-expose-port", "-i", "-no-local-ip",
+		"-host-ip", hostIP,
+		"-host-port", hostPort,
+		"-container-ip", containerIP,
+		"-container-port", containerPort).Start()
 }
 
 func runCommand(path string, args ...string) error {

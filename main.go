@@ -16,9 +16,12 @@ import (
 var (
 	logger *log.Logger
 )
-func main()  {
+
+func main() {
 	var bindAddr string
+	var addresses addressFlags
 	flag.StringVar(&bindAddr, "bind-addr", "0.0.0.0:9998", "Bind on a tcp address in the following format: '0.0.0.0:9998'")
+	flag.Var(&addresses, "expose", "Address to forward to the VM host in the following format: '0.0.0.0:8080:10.0.0.1:8080'")
 	flag.Parse()
 
 	logger = log.New(os.Stdout, "[VMGR] ", log.LstdFlags)
@@ -36,11 +39,12 @@ func main()  {
 	signal.Notify(sigs, syscall.SIGTERM, syscall.SIGKILL)
 	go killServerWhenStopped(sigs, s, logger)
 
+	srv.ExposeAddressFlags(addresses)
+
 	logger.Println("Initializing vpnkit-manager...")
 	err = s.Serve(lis)
 	expectNoError(err)
 }
-
 
 func killServerWhenStopped(sigs chan os.Signal, server *grpc.Server, logger *log.Logger) {
 	<-sigs

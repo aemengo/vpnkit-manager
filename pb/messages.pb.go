@@ -3,9 +3,11 @@
 
 package pb
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
+import (
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
+	math "math"
+)
 
 import (
 	context "golang.org/x/net/context"
@@ -34,16 +36,17 @@ func (m *TextParcel) Reset()         { *m = TextParcel{} }
 func (m *TextParcel) String() string { return proto.CompactTextString(m) }
 func (*TextParcel) ProtoMessage()    {}
 func (*TextParcel) Descriptor() ([]byte, []int) {
-	return fileDescriptor_messages_9f7d1549a6149c10, []int{0}
+	return fileDescriptor_4dc296cbfe5ffcd5, []int{0}
 }
+
 func (m *TextParcel) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TextParcel.Unmarshal(m, b)
 }
 func (m *TextParcel) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_TextParcel.Marshal(b, m, deterministic)
 }
-func (dst *TextParcel) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TextParcel.Merge(dst, src)
+func (m *TextParcel) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TextParcel.Merge(m, src)
 }
 func (m *TextParcel) XXX_Size() int {
 	return xxx_messageInfo_TextParcel.Size(m)
@@ -61,6 +64,69 @@ func (m *TextParcel) GetValue() string {
 	return ""
 }
 
+type ExposeAddressOpts struct {
+	HostIP               string   `protobuf:"bytes,1,opt,name=hostIP,proto3" json:"hostIP,omitempty"`
+	HostPort             string   `protobuf:"bytes,2,opt,name=hostPort,proto3" json:"hostPort,omitempty"`
+	ContainerIP          string   `protobuf:"bytes,3,opt,name=containerIP,proto3" json:"containerIP,omitempty"`
+	ContainerPort        string   `protobuf:"bytes,4,opt,name=containerPort,proto3" json:"containerPort,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ExposeAddressOpts) Reset()         { *m = ExposeAddressOpts{} }
+func (m *ExposeAddressOpts) String() string { return proto.CompactTextString(m) }
+func (*ExposeAddressOpts) ProtoMessage()    {}
+func (*ExposeAddressOpts) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4dc296cbfe5ffcd5, []int{1}
+}
+
+func (m *ExposeAddressOpts) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ExposeAddressOpts.Unmarshal(m, b)
+}
+func (m *ExposeAddressOpts) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ExposeAddressOpts.Marshal(b, m, deterministic)
+}
+func (m *ExposeAddressOpts) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ExposeAddressOpts.Merge(m, src)
+}
+func (m *ExposeAddressOpts) XXX_Size() int {
+	return xxx_messageInfo_ExposeAddressOpts.Size(m)
+}
+func (m *ExposeAddressOpts) XXX_DiscardUnknown() {
+	xxx_messageInfo_ExposeAddressOpts.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ExposeAddressOpts proto.InternalMessageInfo
+
+func (m *ExposeAddressOpts) GetHostIP() string {
+	if m != nil {
+		return m.HostIP
+	}
+	return ""
+}
+
+func (m *ExposeAddressOpts) GetHostPort() string {
+	if m != nil {
+		return m.HostPort
+	}
+	return ""
+}
+
+func (m *ExposeAddressOpts) GetContainerIP() string {
+	if m != nil {
+		return m.ContainerIP
+	}
+	return ""
+}
+
+func (m *ExposeAddressOpts) GetContainerPort() string {
+	if m != nil {
+		return m.ContainerPort
+	}
+	return ""
+}
+
 type Void struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -71,16 +137,17 @@ func (m *Void) Reset()         { *m = Void{} }
 func (m *Void) String() string { return proto.CompactTextString(m) }
 func (*Void) ProtoMessage()    {}
 func (*Void) Descriptor() ([]byte, []int) {
-	return fileDescriptor_messages_9f7d1549a6149c10, []int{1}
+	return fileDescriptor_4dc296cbfe5ffcd5, []int{2}
 }
+
 func (m *Void) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Void.Unmarshal(m, b)
 }
 func (m *Void) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Void.Marshal(b, m, deterministic)
 }
-func (dst *Void) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Void.Merge(dst, src)
+func (m *Void) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Void.Merge(m, src)
 }
 func (m *Void) XXX_Size() int {
 	return xxx_messageInfo_Void.Size(m)
@@ -93,6 +160,7 @@ var xxx_messageInfo_Void proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterType((*TextParcel)(nil), "pb.TextParcel")
+	proto.RegisterType((*ExposeAddressOpts)(nil), "pb.ExposeAddressOpts")
 	proto.RegisterType((*Void)(nil), "pb.Void")
 }
 
@@ -109,6 +177,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type VpnkitManagerClient interface {
 	Ping(ctx context.Context, in *Void, opts ...grpc.CallOption) (*TextParcel, error)
+	ExposeAddress(ctx context.Context, opts ...grpc.CallOption) (VpnkitManager_ExposeAddressClient, error)
 }
 
 type vpnkitManagerClient struct {
@@ -128,9 +197,44 @@ func (c *vpnkitManagerClient) Ping(ctx context.Context, in *Void, opts ...grpc.C
 	return out, nil
 }
 
+func (c *vpnkitManagerClient) ExposeAddress(ctx context.Context, opts ...grpc.CallOption) (VpnkitManager_ExposeAddressClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_VpnkitManager_serviceDesc.Streams[0], "/pb.VpnkitManager/ExposeAddress", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &vpnkitManagerExposeAddressClient{stream}
+	return x, nil
+}
+
+type VpnkitManager_ExposeAddressClient interface {
+	Send(*ExposeAddressOpts) error
+	CloseAndRecv() (*Void, error)
+	grpc.ClientStream
+}
+
+type vpnkitManagerExposeAddressClient struct {
+	grpc.ClientStream
+}
+
+func (x *vpnkitManagerExposeAddressClient) Send(m *ExposeAddressOpts) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *vpnkitManagerExposeAddressClient) CloseAndRecv() (*Void, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(Void)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // VpnkitManagerServer is the server API for VpnkitManager service.
 type VpnkitManagerServer interface {
 	Ping(context.Context, *Void) (*TextParcel, error)
+	ExposeAddress(VpnkitManager_ExposeAddressServer) error
 }
 
 func RegisterVpnkitManagerServer(s *grpc.Server, srv VpnkitManagerServer) {
@@ -155,6 +259,32 @@ func _VpnkitManager_Ping_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VpnkitManager_ExposeAddress_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(VpnkitManagerServer).ExposeAddress(&vpnkitManagerExposeAddressServer{stream})
+}
+
+type VpnkitManager_ExposeAddressServer interface {
+	SendAndClose(*Void) error
+	Recv() (*ExposeAddressOpts, error)
+	grpc.ServerStream
+}
+
+type vpnkitManagerExposeAddressServer struct {
+	grpc.ServerStream
+}
+
+func (x *vpnkitManagerExposeAddressServer) SendAndClose(m *Void) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *vpnkitManagerExposeAddressServer) Recv() (*ExposeAddressOpts, error) {
+	m := new(ExposeAddressOpts)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 var _VpnkitManager_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "pb.VpnkitManager",
 	HandlerType: (*VpnkitManagerServer)(nil),
@@ -164,20 +294,33 @@ var _VpnkitManager_serviceDesc = grpc.ServiceDesc{
 			Handler:    _VpnkitManager_Ping_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "ExposeAddress",
+			Handler:       _VpnkitManager_ExposeAddress_Handler,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "messages.proto",
 }
 
-func init() { proto.RegisterFile("messages.proto", fileDescriptor_messages_9f7d1549a6149c10) }
+func init() { proto.RegisterFile("messages.proto", fileDescriptor_4dc296cbfe5ffcd5) }
 
-var fileDescriptor_messages_9f7d1549a6149c10 = []byte{
-	// 128 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0xcb, 0x4d, 0x2d, 0x2e,
-	0x4e, 0x4c, 0x4f, 0x2d, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x2a, 0x48, 0x52, 0x52,
-	0xe2, 0xe2, 0x0a, 0x49, 0xad, 0x28, 0x09, 0x48, 0x2c, 0x4a, 0x4e, 0xcd, 0x11, 0x12, 0xe1, 0x62,
-	0x2d, 0x4b, 0xcc, 0x29, 0x4d, 0x95, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x0c, 0x82, 0x70, 0x94, 0xd8,
-	0xb8, 0x58, 0xc2, 0xf2, 0x33, 0x53, 0x8c, 0x0c, 0xb9, 0x78, 0xc3, 0x0a, 0xf2, 0xb2, 0x33, 0x4b,
-	0x7c, 0x13, 0xf3, 0x12, 0xd3, 0x53, 0x8b, 0x84, 0x14, 0xb8, 0x58, 0x02, 0x32, 0xf3, 0xd2, 0x85,
-	0x38, 0xf4, 0x0a, 0x92, 0xf4, 0x40, 0x4a, 0xa4, 0xf8, 0x40, 0x2c, 0x84, 0x81, 0x49, 0x6c, 0x60,
-	0x9b, 0x8c, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0xda, 0xcb, 0x58, 0x29, 0x7b, 0x00, 0x00, 0x00,
+var fileDescriptor_4dc296cbfe5ffcd5 = []byte{
+	// 227 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x64, 0x90, 0xc1, 0x4a, 0x03, 0x31,
+	0x10, 0x86, 0x49, 0x5d, 0x97, 0x3a, 0xb2, 0x05, 0x07, 0x95, 0x65, 0x4f, 0x4b, 0xf0, 0xd0, 0xd3,
+	0x1e, 0xea, 0x13, 0x78, 0xf0, 0xd0, 0x83, 0x18, 0x44, 0x7a, 0xcf, 0x76, 0x87, 0x35, 0x58, 0x93,
+	0x90, 0x89, 0xd2, 0xb7, 0xf0, 0x95, 0x25, 0xb1, 0x2c, 0x2d, 0xbd, 0xcd, 0x37, 0xf3, 0xf1, 0xc3,
+	0x3f, 0xb0, 0xf8, 0x22, 0x66, 0x3d, 0x12, 0x77, 0x3e, 0xb8, 0xe8, 0x70, 0xe6, 0x7b, 0x29, 0x01,
+	0xde, 0x69, 0x1f, 0x95, 0x0e, 0x5b, 0xda, 0xe1, 0x2d, 0x5c, 0xfe, 0xe8, 0xdd, 0x37, 0xd5, 0xa2,
+	0x15, 0xcb, 0xab, 0xb7, 0x7f, 0x90, 0xbf, 0x02, 0x6e, 0x9e, 0xf7, 0xde, 0x31, 0x3d, 0x0d, 0x43,
+	0x20, 0xe6, 0x57, 0x1f, 0x19, 0xef, 0xa1, 0xfc, 0x70, 0x1c, 0xd7, 0xea, 0x20, 0x1f, 0x08, 0x1b,
+	0x98, 0xa7, 0x49, 0xb9, 0x10, 0xeb, 0x59, 0xbe, 0x4c, 0x8c, 0x2d, 0x5c, 0x6f, 0x9d, 0x8d, 0xda,
+	0x58, 0x0a, 0x6b, 0x55, 0x5f, 0xe4, 0xf3, 0xf1, 0x0a, 0x1f, 0xa0, 0x9a, 0x30, 0x47, 0x14, 0xd9,
+	0x39, 0x5d, 0xca, 0x12, 0x8a, 0x8d, 0x33, 0xc3, 0x8a, 0xa0, 0xda, 0x78, 0xfb, 0x69, 0xe2, 0x8b,
+	0xb6, 0x7a, 0xa4, 0x80, 0x2d, 0x14, 0xca, 0xd8, 0x11, 0xe7, 0x9d, 0xef, 0xbb, 0xa4, 0x34, 0x8b,
+	0x34, 0x1d, 0x55, 0x5c, 0x41, 0x75, 0xd2, 0x05, 0xef, 0x92, 0x70, 0x56, 0xaf, 0x99, 0x12, 0x96,
+	0xa2, 0x2f, 0xf3, 0xbf, 0x1e, 0xff, 0x02, 0x00, 0x00, 0xff, 0xff, 0x37, 0xfb, 0x50, 0xb8, 0x41,
+	0x01, 0x00, 0x00,
 }
