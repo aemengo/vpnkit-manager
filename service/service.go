@@ -13,7 +13,8 @@ import (
 )
 
 type Service struct {
-	logger *log.Logger
+	logger         *log.Logger
+	savedAddresses []*pb.ExposeAddressOpts
 }
 
 func New(logger *log.Logger) (*Service, error) {
@@ -58,7 +59,6 @@ func (s *Service) ExposeAddress(stream pb.VpnkitManager_ExposeAddressServer) err
 	return stream.SendAndClose(&pb.Void{})
 }
 
-
 func (s *Service) ExposeAddressFlags(addresses []string) {
 	for _, address := range addresses {
 		s.logger.Printf("Attempting to expose port for %q...\n", address)
@@ -76,12 +76,30 @@ func (s *Service) ExposeAddressFlags(addresses []string) {
 	}
 }
 
+func (s *Service) ListExposedAddresses(_ *pb.Void, stream pb.VpnkitManager_ListExposedAddressesServer) error {
+	for _, addr := range s.savedAddresses {
+		stream.Send(addr)
+	}
+
+	return nil
+}
+
 func (s *Service) exposeAddress(hostIP, hostPort, containerIP, containerPort string) error {
-	return exec.Command("/usr/bin/vpnkit-expose-port", "-i", "-no-local-ip",
+	err := exec.Command("/usr/bin/vpnkit-expose-port", "-i", "-no-local-ip",
 		"-host-ip", hostIP,
 		"-host-port", hostPort,
 		"-container-ip", containerIP,
 		"-container-port", containerPort).Start()
+	if err != nil {
+		return err
+	}
+
+	s.savedAddresses = append(s.savedAddresses, &pb.ExposeAddressOpts{
+		HostIP:        hostIP,
+		HostPort:      hostPort,
+		ContainerIP:   containerIP,
+		ContainerPort: containerPort})
+	return nil
 }
 
 func runCommand(path string, args ...string) error {

@@ -5,6 +5,7 @@ package pb;
 service VpnkitManager {
     rpc Ping (Void) returns (TextParcel);
     rpc ExposeAddress (stream ExposeAddressOpts) returns (Void);
+    rpc ListExposedAddresses (Void) returns (stream ExposeAddressOpts);
 }
 
 message TextParcel {

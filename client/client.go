@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/aemengo/vpnkit-manager/pb"
 	"google.golang.org/grpc"
+	"io"
 	"strings"
 )
 
@@ -55,6 +56,34 @@ func Forward(ctx context.Context, target string, addresses []string) error {
 	}
 
 	return nil
+}
+
+func ListForwarded(ctx context.Context, target string) ([]string, error) {
+	client, err := newClient(target)
+	if err != nil {
+		return nil, err
+	}
+
+	stream, err := client.ListExposedAddresses(ctx, &pb.Void{})
+	if err != nil {
+		return nil, err
+	}
+
+	var addresses []string
+
+	for {
+		address, err := stream.Recv()
+		if err == io.EOF {
+			return addresses, nil
+		}
+
+		if err != nil {
+			return nil, err
+		}
+
+		addresses = append(addresses, fmt.Sprintf("%s:%s:%s:%s",
+			address.HostIP, address.HostPort, address.ContainerIP, address.HostPort))
+	}
 }
 
 func newClient(target string) (pb.VpnkitManagerClient, error) {
