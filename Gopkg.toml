@@ -5,6 +5,7 @@
 #
 # required = ["github.com/user/thing/cmd/thing"]
 # ignored = ["github.com/user/project/pkgX", "bitbucket.org/user/project/pkgA/pkgY"]
+ignored = ["golang.org/x/net/trace"]
 #
 # [[constraint]]
 #   name = "github.com/user/project"

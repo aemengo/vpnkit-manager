@@ -21,9 +21,7 @@
     "http/httpguts",
     "http2",
     "http2/hpack",
-    "idna",
-    "internal/timeseries",
-    "trace"
+    "idna"
   ]
   revision = "161cd47e91fd58ac17490ef4d742dc98bb4cf60e"
 
@@ -96,6 +94,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "06047f523c061c1697bde08a6bc073853958944e42a4d05f6e84dd92a685af7d"
+  inputs-digest = "107d392361837dceb77b763a8aabf04c3f05471e60339193a41534267389be2a"
   solver-name = "gps-cdcl"
   solver-version = 1
