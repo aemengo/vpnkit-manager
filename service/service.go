@@ -85,6 +85,10 @@ func (s *Service) ListExposedAddresses(_ *pb.Void, stream pb.VpnkitManager_ListE
 }
 
 func (s *Service) exposeAddress(hostIP, hostPort, containerIP, containerPort string) error {
+	if s.isExposed(hostIP, hostPort, containerIP, containerPort) {
+		return nil
+	}
+
 	err := exec.Command("/usr/bin/vpnkit-expose-port", "-i", "-no-local-ip",
 		"-host-ip", hostIP,
 		"-host-port", hostPort,
@@ -100,6 +104,19 @@ func (s *Service) exposeAddress(hostIP, hostPort, containerIP, containerPort str
 		ContainerIP:   containerIP,
 		ContainerPort: containerPort})
 	return nil
+}
+
+func (s *Service) isExposed(hostIP, hostPort, containerIP, containerPort string) bool {
+	for _, addr := range s.savedAddresses {
+		if addr.HostIP == hostIP &&
+			addr.HostPort == hostPort &&
+			addr.ContainerIP == containerIP &&
+			addr.ContainerPort == containerPort {
+				return true
+		}
+	}
+
+	return false
 }
 
 func runCommand(path string, args ...string) error {

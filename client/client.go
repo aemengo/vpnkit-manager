@@ -37,7 +37,6 @@ func Forward(ctx context.Context, target string, addresses []string) error {
 	if err != nil {
 		return err
 	}
-	defer stream.CloseAndRecv()
 
 	for _, address := range addresses {
 		elements := strings.Split(address, ":")
@@ -55,7 +54,8 @@ func Forward(ctx context.Context, target string, addresses []string) error {
 		}
 	}
 
-	return nil
+	_, err = stream.CloseAndRecv()
+	return err
 }
 
 func ListForwarded(ctx context.Context, target string) ([]string, error) {
