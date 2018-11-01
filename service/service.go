@@ -24,8 +24,8 @@ func New(logger *log.Logger) (*Service, error) {
 		return nil, err
 	}
 
-	logger.Println("Attempting to enable internet connectivity for '10.0.0.1/16'...")
-	err = runCommand("iptables", "-t", "nat", "-A", "POSTROUTING", "-s", "10.0.0.0/16", "-o", "eth0", "-j", "MASQUERADE")
+	logger.Println("Attempting to enable internet connectivity...")
+	err = runCommand("iptables", "-t", "nat", "-A", "POSTROUTING", "-o", "eth0", "-j", "MASQUERADE")
 	if err != nil {
 		return nil, err
 	}
