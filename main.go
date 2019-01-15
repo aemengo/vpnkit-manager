@@ -18,10 +18,15 @@ var (
 )
 
 func main() {
-	var bindAddr string
-	var addresses addressFlags
+	var (
+		bindAddr     string
+		addresses    addressFlags
+		portMappings addressFlags
+	)
+
 	flag.StringVar(&bindAddr, "bind-addr", "0.0.0.0:9998", "Bind on a tcp address in the following format: '0.0.0.0:9998'")
 	flag.Var(&addresses, "expose", "Address to forward to the VM host in the following format: '0.0.0.0:8080:10.0.0.1:8080'")
+	flag.Var(&portMappings, "map", "Address to map from the gateway interface in the following format: '8080:10.0.0.1:8080'")
 	flag.Parse()
 
 	logger = log.New(os.Stdout, "[VMGR] ", log.LstdFlags)
@@ -40,6 +45,7 @@ func main() {
 	go killServerWhenStopped(sigs, s, logger)
 
 	srv.ExposeAddressFlags(addresses)
+	srv.PerformPortMappings(portMappings)
 
 	logger.Println("Initializing vpnkit-manager...")
 	err = s.Serve(lis)

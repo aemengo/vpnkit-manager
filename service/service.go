@@ -76,6 +76,23 @@ func (s *Service) ExposeAddressFlags(addresses []string) {
 	}
 }
 
+func (s *Service) PerformPortMappings(addresses []string) {
+	for _, address := range addresses {
+		s.logger.Printf("Attempting to map port for %q...\n", address)
+
+		elements := strings.Split(address, ":")
+		if len(elements) != 3 {
+			s.logger.Printf("%q is an invalid port mapping address...\n", address)
+			continue
+		}
+
+		err := s.mapPort(elements[0], elements[1], elements[2])
+		if err != nil {
+			s.logger.Println(err)
+		}
+	}
+}
+
 func (s *Service) ListExposedAddresses(_ *pb.Void, stream pb.VpnkitManager_ListExposedAddressesServer) error {
 	for _, addr := range s.savedAddresses {
 		stream.Send(addr)
@@ -103,6 +120,22 @@ func (s *Service) exposeAddress(hostIP, hostPort, containerIP, containerPort str
 		HostPort:      hostPort,
 		ContainerIP:   containerIP,
 		ContainerPort: containerPort})
+	return nil
+}
+
+func (s *Service) mapPort(srcPort, destinationIP, destinationPort string) error {
+	output, err := exec.Command("iptables",
+		"-t", "nat",
+		"-A", "PREROUTING",
+		"-i", "eth0",
+		"-p", "tcp",
+		"--dport", srcPort,
+		"-j", "DNAT",
+		"--to-destination", destinationIP+":"+destinationPort).CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("failed to map port %s -> %s:%s: %s: %s", srcPort, destinationIP, destinationPort, err, output)
+	}
+
 	return nil
 }
 
